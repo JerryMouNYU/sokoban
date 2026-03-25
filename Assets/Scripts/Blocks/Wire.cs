@@ -33,7 +33,7 @@ public class Wire : Block, IElectronic
 
     protected override void GridChanged()
     {
-        SetCharged(false);
+        // Charge is resolved centrally by GridManagerRuntimeSystems after the grid updates.
     }
 
     public void SetCharged(bool charged)
