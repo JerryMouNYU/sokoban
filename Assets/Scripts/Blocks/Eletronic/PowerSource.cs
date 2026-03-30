@@ -1,7 +1,7 @@
 using UnityEngine;
 
-public class PowerSource : MonoBehaviour
+public class PowerSource : Block_Base_J
 {
-
+    
 
 }
