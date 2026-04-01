@@ -50,9 +50,12 @@ public class GridManagerRuntimeSystems : MonoBehaviour
     private void RebuildElectricalNetwork()
     {
         Wire[] wires = Object.FindObjectsByType<Wire>(FindObjectsSortMode.None);
+        Dictionary<Wire, bool> previousChargeStates = new Dictionary<Wire, bool>(wires.Length);
+
         for (int i = 0; i < wires.Length; i++)
         {
-            wires[i].SetCharged(false);
+            previousChargeStates[wires[i]] = wires[i].IsCharged;
+            wires[i].SetCharged(false, false);
         }
 
         PowerSource[] powerSources = Object.FindObjectsByType<PowerSource>(FindObjectsSortMode.None);
@@ -81,7 +84,8 @@ public class GridManagerRuntimeSystems : MonoBehaviour
                     continue;
                 }
 
-                adjacentWire.SetCharged(true);
+                bool wasPreviouslyCharged = previousChargeStates.ContainsKey(adjacentWire) && previousChargeStates[adjacentWire];
+                adjacentWire.SetCharged(true, !wasPreviouslyCharged);
                 propagationQueue.Enqueue(adjacentWire);
             }
         }

@@ -54,7 +54,7 @@ public class Destination : MonoBehaviour
         if (Time.time >= nextDebugLogTime)
         {
             nextDebugLogTime = Time.time + 1f;
-            Debug.Log($"Destination distance check. Player: {player.transform.position}, Goal: {transform.position}, Distance: {distanceToPlayer}, Reach Distance: {reachDistance}", this);
+//            Debug.Log($"Destination distance check. Player: {player.transform.position}, Goal: {transform.position}, Distance: {distanceToPlayer}, Reach Distance: {reachDistance}", this);
         }
 
         if (distanceToPlayer > reachDistance)

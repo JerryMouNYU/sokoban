@@ -6,6 +6,31 @@ public class Block : MonoBehaviour
 {
     [Header("Movement Control")]
     #region Movement
+
+    [Header("Global Speed")]
+    [SerializeField]
+    private bool enableRuntimeSpeedHotkeys = true;
+
+    [SerializeField]
+    private KeyCode slowerKey = KeyCode.Minus;
+
+    [SerializeField]
+    private KeyCode fasterKey = KeyCode.Equals;
+
+    [SerializeField]
+    private KeyCode resetSpeedKey = KeyCode.Backspace;
+
+    [SerializeField]
+    [Min(0.1f)]
+    private float speedStep = 0.25f;
+
+    [SerializeField]
+    [Min(0.1f)]
+    private float defaultGlobalSpeedMultiplier = 1f;
+
+    private static float globalSpeedMultiplier = 1f;
+    private static bool globalSpeedInitialized;
+    private static int lastSpeedHotkeyFrame = -1;
     
     [SerializeField]
     protected AnimationCurve moveCurve;
@@ -42,8 +67,19 @@ public class Block : MonoBehaviour
 
     protected virtual void Start()
     {
+        if (!globalSpeedInitialized)
+        {
+            globalSpeedMultiplier = defaultGlobalSpeedMultiplier;
+            globalSpeedInitialized = true;
+        }
+
         startPos = transform.position;
         targetPos = transform.position;
+    }
+
+    protected virtual void Update()
+    {
+        HandleRuntimeSpeedHotkeys();
     }
 
     #region Movement Methods
@@ -85,7 +121,7 @@ public class Block : MonoBehaviour
     /// </summary>
     protected Vector3 Move()
     {
-        lerpTime += Time.deltaTime * speed;
+        lerpTime += Time.deltaTime * speed * globalSpeedMultiplier;
         float percent = Mathf.Clamp01(moveCurve.Evaluate(lerpTime));
         Vector3 newPos = Vector3.Lerp(startPos, targetPos, percent);
         return newPos;
@@ -206,6 +242,38 @@ public class Block : MonoBehaviour
     }
 
     protected virtual void GridChanged(){}
+
+    private void HandleRuntimeSpeedHotkeys()
+    {
+        if (!enableRuntimeSpeedHotkeys)
+        {
+            return;
+        }
+
+        if (lastSpeedHotkeyFrame == Time.frameCount)
+        {
+            return;
+        }
+
+        if (Input.GetKeyDown(slowerKey))
+        {
+            globalSpeedMultiplier = Mathf.Max(0.1f, globalSpeedMultiplier - speedStep);
+            lastSpeedHotkeyFrame = Time.frameCount;
+            Debug.Log("Global block speed multiplier: " + globalSpeedMultiplier, this);
+        }
+        else if (Input.GetKeyDown(fasterKey))
+        {
+            globalSpeedMultiplier += speedStep;
+            lastSpeedHotkeyFrame = Time.frameCount;
+            Debug.Log("Global block speed multiplier: " + globalSpeedMultiplier, this);
+        }
+        else if (Input.GetKeyDown(resetSpeedKey))
+        {
+            globalSpeedMultiplier = defaultGlobalSpeedMultiplier;
+            lastSpeedHotkeyFrame = Time.frameCount;
+            Debug.Log("Global block speed multiplier reset to: " + globalSpeedMultiplier, this);
+        }
+    }
 
     #endregion 
 }

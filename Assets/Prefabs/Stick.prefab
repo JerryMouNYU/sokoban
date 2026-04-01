@@ -150,4 +150,7 @@ MonoBehaviour:
   canMove: 1
   gridPos: {x: 0, y: 0}
   moveChange: {x: 0, y: 0}
+  moveClip: {fileID: 8300000, guid: 1887312e322952748b15fbf24060c735, type: 3}
+  moveVolume: 0.8
+  moveSpatialBlend: 0
   leadBlock: {fileID: 0}

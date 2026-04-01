@@ -12,5 +12,4 @@ public class Slidey : Block
     {
         CheckMove(_deltaX, _deltaY);
     }
-
 }

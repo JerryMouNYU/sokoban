@@ -1,10 +1,7 @@
-using System.Net;
 using UnityEngine;
 
 public class Visual_Wire : MonoBehaviour
 {
-
-
     [SerializeField]
     GameObject WireStright;
     [SerializeField]
@@ -22,6 +19,12 @@ public class Visual_Wire : MonoBehaviour
     Material wirePoweredMat;
     int previouisMask;
 
+    public void ApplyState(bool powered, bool up, bool down, bool left, bool right)
+    {
+        ChangeDirectionalVisual(up, down, left, right);
+        ChangeLight(powered);
+    }
+
     void ChangeDirectionalVisual(bool up, bool down, bool left, bool right)
     {
         int mask = 0;
@@ -29,6 +32,13 @@ public class Visual_Wire : MonoBehaviour
         if (right) mask |= 2;
         if (down) mask |= 4;
         if (left) mask |= 8;
+
+        if (mask == previouisMask)
+        {
+            return;
+        }
+
+        previouisMask = mask;
 
         switch (mask)
         {
@@ -67,22 +77,34 @@ public class Visual_Wire : MonoBehaviour
     void SetStraight(bool hori)
     {
         DisableAll();
+        WireStright.SetActive(true);
+        WireStright.transform.localRotation = hori ? Quaternion.Euler(-90,0 , 0) :Quaternion.Euler(-90,0 , 90);
 
     }
     void Set90(int rotationType)
     {
         if (rotationType < 0 || rotationType > 3) Debug.LogError("Out Of Range");
+        DisableAll();
+        Wire90.SetActive(true);
+        Wire90.transform.localRotation = Quaternion.Euler(-90,0, rotationType * 90);
 
     }
 
     void SetThird(int rotationType)
     {
         if(rotationType<0 ||rotationType>3) Debug.LogError("Out Of Range");
+        DisableAll();
+        WireStright.SetActive(true);
+        WireHalf.SetActive(true);
+        WireStright.transform.localRotation =  Quaternion.Euler(-90,0, (rotationType) * 90);
+        WireHalf.transform.localRotation = Quaternion.Euler(-90,0, (rotationType+1) * 90);
     }
 
     void SetCross()
     {
-        
+        DisableAll();
+        WireStright.SetActive(true);
+        WireCross.SetActive(true);
     }
     void DisableAll()
     {
@@ -92,20 +114,20 @@ public class Visual_Wire : MonoBehaviour
         WireHalf.SetActive(false);
     }
 
-    void ChangeLight(bool turnOn)
+    public void ChangeLight(bool turnOn)
     {
         if (turnOn)
         {
             foreach (MeshRenderer m in WireLightPart)
             {
-                m.material = wirePoweredMat;
+                if (m != null && wirePoweredMat != null) m.sharedMaterial = wirePoweredMat;
             }
         }
         else
         {
             foreach (MeshRenderer m in WireLightPart)
             {
-                m.material = wireDepowerMat;
+                if (m != null && wireDepowerMat != null) m.sharedMaterial = wireDepowerMat;
             }
         }
     }
