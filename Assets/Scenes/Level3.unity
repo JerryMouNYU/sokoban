@@ -224,7 +224,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c70537de56eb9e4a82a3b7322c896b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Destination
-  sceneName: Level1
+  sceneName: DemoLevel
   reachDistance: 1
 --- !u!65 &8526820
 BoxCollider:
