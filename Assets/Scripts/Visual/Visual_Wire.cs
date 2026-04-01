@@ -17,7 +17,7 @@ public class Visual_Wire : MonoBehaviour
     Material wireDepowerMat;
     [SerializeField]
     Material wirePoweredMat;
-    int previouisMask;
+    int previouisMask=15;
 
     public void ApplyState(bool powered, bool up, bool down, bool left, bool right)
     {
@@ -44,10 +44,10 @@ public class Visual_Wire : MonoBehaviour
         {
             //  less than 1; Don't Change
             case 0:
-            case 1:
-            case 2:
-            case 4:
-            case 8:
+            case 1: if((previouisMask&mask)==0)SetStraight(false); break;
+            case 2: if((previouisMask&mask)==0)SetStraight(true); break;
+            case 4:if((previouisMask&mask)==0)SetStraight(false); break;
+            case 8: if((previouisMask&mask)==0)SetStraight(true); break;
                 return;
             
             //  2 connect Stright
@@ -96,14 +96,15 @@ public class Visual_Wire : MonoBehaviour
         DisableAll();
         WireStright.SetActive(true);
         WireHalf.SetActive(true);
-        WireStright.transform.localRotation =  Quaternion.Euler(-90,0, (rotationType) * 90);
-        WireHalf.transform.localRotation = Quaternion.Euler(-90,0, (rotationType+1) * 90);
+        WireStright.transform.localRotation =  Quaternion.Euler(-90,0, (rotationType+1) * 90);
+        WireHalf.transform.localRotation = Quaternion.Euler(-90,0, (rotationType+2) * 90);
     }
 
     void SetCross()
     {
         DisableAll();
         WireStright.SetActive(true);
+         WireStright.transform.localRotation =Quaternion.Euler(-90,0 , 0) ;
         WireCross.SetActive(true);
     }
     void DisableAll()
